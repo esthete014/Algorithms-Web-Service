@@ -1,6 +1,6 @@
 import { useState } from "react";
-import './styles.css'; // Импортируем CSS стили
-import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
+import './styles.css';
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -8,8 +8,6 @@ const Register = () => {
         password: "",
     });
 
-
-    
     const navigate = useNavigate(); // Инициализируем useNavigate
 
     const handleChange = (e) => {
@@ -28,7 +26,7 @@ const Register = () => {
         localStorage.setItem('user', JSON.stringify(formData));
 
         // Переходим на страницу problems
-        navigate("/problems"); // Используем navigate вместо history.push
+        navigate("/ListTasks"); // Используем navigate вместо history.push
     };
 
     return (

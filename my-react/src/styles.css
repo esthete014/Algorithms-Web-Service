@@ -16,6 +16,9 @@ body {
   background-color: #202020;
   border-radius: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h2 {
@@ -65,3 +68,53 @@ button:hover {
   font-size: 14px;
   text-align: center;
 }
+
+.header {
+  margin-bottom: 20px; /* Отступ снизу */
+  color: #505050; /* Цвет заголовка */
+  text-align: center; /* Центрируем текст заголовка */
+}
+
+.label {
+  margin-bottom: 10px; /* Отступ снизу */
+  color: #ffffff; /* Цвет метки */
+}
+
+.select {
+  margin-bottom: 20px; /* Отступ снизу */
+  padding: 10px; /* Отступ внутри выпадающего списка */
+  border-radius: 4px; /* Закругление углов */
+}
+
+.list {
+  list-style-type: none; /* Убираем маркеры */
+  padding: 0; /* Убираем отступы */
+}
+
+.list-item {
+  cursor: pointer; /* Указатель курсора при наведении */
+  margin-bottom: 10px; /* Отступ между элементами списка */
+  color: #ffffff; /* Цвет текста списка */
+}
+
+.radio-group {
+  display: flex; /* Используем flexbox для горизонтального расположения */
+  gap: 20px; /* Добавляем промежуток между радиокнопками */
+  margin-bottom: 20px; /* Отступ снизу для отделения от других элементов */
+  /* color: #a04141 */
+}
+
+.container_2 {
+  width: 100vw;
+  height: 70dvh;
+  max-width: 500px;
+  padding: 20px;
+  background-color: #202020;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
