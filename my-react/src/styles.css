@@ -10,7 +10,8 @@ body {
 }
 
 .container {
-  width: 100%;
+  width: 60dvw;
+  height: 40dvh;
   max-width: 500px;
   padding: 20px;
   background-color: #202020;
@@ -29,6 +30,8 @@ h2 {
 form {
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
+  padding-top: 100;
 }
 
 input[type="text"],
@@ -57,10 +60,17 @@ button {
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+  outline: none;
+}
+.button{
+  outline: none;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #202020;
+}
+.button.no-hover {
+  background-color: #b60606;
 }
 
 .error-message {

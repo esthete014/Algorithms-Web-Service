@@ -1,14 +1,15 @@
 import { useState } from "react";
 import './styles.css';
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+
 
 const Register = () => {
     const [formData, setFormData] = useState({
         username: "",
         password: "",
     });
-
-    const navigate = useNavigate(); // Инициализируем useNavigate
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -49,7 +50,10 @@ const Register = () => {
                     onChange={handleChange}
                     required
                 />
-                <button type="submit">Register</button>
+                <Button type="submit"
+                sx ={{color:'#ffffff', backgroundColor:'#007bff', marginTop: 3,"&:hover": {backgroundColor: "#1976d2"}}}
+                >Register
+                </Button>
             </form>
         </div>
     );

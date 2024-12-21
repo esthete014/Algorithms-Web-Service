@@ -1,34 +1,37 @@
 import { useState } from 'react';
-import Register from "./Register";
-import Problems from './Problems';
-import ListTasks from './ListTasks';
-import AccountButton from "./AccountButton";
-import Account from './Account';
-import './styles.css';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; // Импортируем Routes вместо Switch
+import Register from "./Register"; 
+import Problems from './Problems'; 
+import ListTasks from './ListTasks'; 
+import AccountButton from "./AccountButton"; 
+import Account from './Account'; 
+import './styles.css'; 
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; 
 
 const App = () => {
     const [avatarSrc, setAvatarSrc] = useState('');
+
+    // Обёртка для кнопки личного кабинета
     const AccountButtonWrapper = () => {
-        const location = useLocation();
-    
-        // Показываем кнопку только на странице `/problems`
+        const location = useLocation(); 
+
+        // Отображаем кнопку только на определённых страницах
         if (location.pathname === '/problems' || location.pathname === '/ListTasks') {
-          return <AccountButton avatarSrc={avatarSrc} />;
+            return <AccountButton avatarSrc={avatarSrc} />; // Показываем только на странице задач
         }
         return null;
     };
+
     return (
         <Router>
-             <AccountButtonWrapper />
+            <AccountButtonWrapper /> {/* Обёртка для условного отображения кнопки */}
             <Routes>
-                <Route path="/" element={<Register />} /> {/* Используем element вместо component */}
+                <Route path="/" element={<Register />} /> 
                 <Route path="/problems" element={<Problems />} />
                 <Route path="/ListTasks" element={<ListTasks />} />
-                <Route path="/account" element={<Account setAvatarSrc={setAvatarSrc} />}/>
+                <Route path="/account" element={<Account setAvatarSrc={setAvatarSrc} />} />
             </Routes>
         </Router>
     );
 };
 
-export default App;
+export default App; 
