@@ -1,5 +1,5 @@
 // Импортируем необходимые хуки и стили
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./styles.css";
 import { Box, Button, Tabs } from '@mui/material';
@@ -13,12 +13,30 @@ const tasksData = [
 ];
 
 const ListTasks = () => {
+    const [tasks, setTasks] = useState([]);
     const [value, setValue] = useState('one');
       const handleChange = (event, newValue) => {
         setValue(newValue);
       };
     const [sortOrder, setSortOrder] = useState('all'); // Хранит текущую выбранную категорию
     const navigate = useNavigate(); // Хук для программной навигации
+
+    const fetchTasks = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/problems'); // URL вашего API
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setTasks(data); // Устанавливаем полученные задачи в состояние
+        } catch (error) {
+            console.error('Ошибка при получении задач:', error);
+        }
+    };
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+    console.log(tasks)
 
     // Фильтрация задач в зависимости от выбранной сложности
     const filterTasks = () => {
