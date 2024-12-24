@@ -7,28 +7,28 @@ import {
   Grid,
   Button,
   Paper,
-  Tab,
-  Tabs
+  AppBar,
+  Toolbar
 } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useNavigate } from "react-router-dom";
 import tasksData from "./ListTasks.jsx";
+import { completedTasksData, valueFormatter } from './webUsageStats';
 
 const Account = () => {
   const navigate = useNavigate();
 
-  const [value, setValue] = React.useState('one');
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  // User data state
   const [userData] = React.useState({
     username: "JohnDoe",
     description: "Passionate coder and problem solver",
     avatar: "/path/to/avatar.jpg",
   });
+  const [radius] = React.useState(65);
+  const [itemNb] = React.useState(3);
+    
+  // const [radius, setRadius] = React.useState(50);
+  // const [itemNb, setItemNb] = React.useState(5);
+  const [skipAnimation] = React.useState(false);
 
   // Example tasks summary data
   const tasksSummary = {
@@ -39,36 +39,60 @@ const Account = () => {
     hard: { total: 1, completed: 0 },
   };
 
-  // Checking if tasksData exists and has the correct structure
   if (!tasksData || tasksData.length === 0) {
     console.error("No tasks data available");
   }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", backgroundColor: "#1a1a1a", height: "100dvh", width: "100dvw", 
-            justifyContent: "center", alignItems: "center", margin: 0}}>
+            justifyContent: "center", alignItems: "center"}}>
 
-          <Box sx={{ paddingLeft: "215px", marginBottom: 5, marginTop: -9, width: "calc(100% - 215px)", backgroundColor: "#202020"}}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                textColor="#ffffff"
-                indicatorColor="#ffffff"
-                aria-label="secondary tabs example"
-              >
-                <Button onClick={() => navigate("/ListTasks")}
-                    sx={{ marginBottom: 0, backgroundColor: "#202020", color: "#ffffff" }}>
-                    <img src="/logo-full.png" alt="Logo"/>
-                </Button>
-                <Tab value="two" label="Log out"
-                    variant="text"
-                    onClick={() => navigate("/")}
-                    sx={{ marginLeft:2, marginBottom: 0, backgroundColor: "#202020", color: "#ffffff" }}
-                />
-              </Tabs>
-          </Box>
+      <AppBar position="fixed" sx={{backgroundColor: "#202020"}}>
+        <Toolbar variant="dense">
+          <Button ///кнопка лого
+            onClick={() => navigate("/ListTasks")}
+            sx={{
+              marginBottom: 0,
+              backgroundColor: "#202020",
+              color: "#ffffff",
+            }}
+          >
+            <img src="/logo-full.png" alt="Logo" />
+          </Button>
+          <Typography ///расстояние между иконками
+            variant="h5"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: "flex",
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          ></Typography>
+          <Button
+            value="two"
+            label="Log out"
+            variant="text"
+            onClick={() => navigate("/")}
+            sx={{
+              marginLeft: 2,
+              marginBottom: 0,
+              backgroundColor: "#202020",
+              color: "#ffffff",
+            }}
+          >
+            Log Out
+          </Button>
+        </Toolbar>
+      </AppBar>
 
-      <Box sx={{ padding: 2, backgroundColor: "#202020", height: "80dvh", width: "76%" }}>
+      <Box sx={{ padding: 2, backgroundColor: "#202020", height: "80dvh", width: "76dvw" }}>
         <Grid container spacing={2} paddingTop={2} >
           {/* Left section: Avatar, username, description */}
           <Grid item xs={12} md={4} borderRadius={4} >
@@ -116,51 +140,74 @@ const Account = () => {
 
           {/* Right section: Pie chart and summary */}
           <Grid item xs={12} md={8}>
-            <Paper
-              elevation={3}
-              sx={{
-                padding: 2,
-                backgroundColor: "#3a3f47",
-                color: "#fff",
-              }}
-            >
-              <Box display="flex" flexDirection="column" alignItems="center">
-                {tasksSummary.total > 0 && (
-                  <PieChart
-                    height={400} // Increased height
-                    width={400} // Added width for better display
-                    series={[
-                      {
-                        data: [
-                          { label: "Easy", value: tasksSummary.easy.completed, color: "green" },
-                          { label: "Medium", value: tasksSummary.medium.completed, color: "yellow" },
-                          { label: "Hard", value: tasksSummary.hard.completed, color: "red" },
-                        ],
-                        innerRadius: 83,
-                        outerRadius: 150,
-                        arcLabel: (params) => params.label,
-                      },
-                    ]}
-                    colors={["green", "yellow", "red"]}
-                  />
-                )}
-                <Typography variant="h6" gutterBottom>
-                  {tasksSummary.completed}/{tasksSummary.total} tasks completed
+            <Paper elevation={3} sx={{ padding: 2, backgroundColor: "#3a3f47", color: "#fff", }} >
+              <Box sx={{ width: '100%' }} display="flex" flexDirection="column" alignItems="center">
+                <PieChart
+                  height={300}
+                  series={[
+                    {
+                      data: completedTasksData.slice(0, itemNb),  // Используем список завершённых задач
+                      innerRadius: radius,
+                      arcLabel: (params) => params.label ?? '',
+                      arcLabelMinAngle: 20,
+                      valueFormatter,
+                    },
+                  ]}
+                  skipAnimation={skipAnimation}
+                />
+
+                {/* <FormControlLabel
+                  checked={skipAnimation}
+                  control={
+                    <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+                  }
+                  label="skipAnimation"
+                  labelPlacement="end"
+                /> */}
+
+                {/* <Typography id="input-item-number" gutterBottom>
+                  Number of items
                 </Typography>
 
-                {/* Task difficulty summary */}
+                <Slider
+                  value={itemNb}
+                  onChange={handleItemNbChange}
+                  valueLabelDisplay="auto"
+                  min={1}
+                  max={8}
+                  aria-labelledby="input-item-number"
+                />
+
+                  <Typography id="input-radius" gutterBottom>
+                    Radius
+                  </Typography>
+
+                <Slider
+                  value={radius}
+                  onChange={handleRadius}
+                  valueLabelDisplay="auto"
+                  min={15}
+                  max={100}
+                  aria-labelledby="input-radius"
+                /> */}
+
+                <Typography variant="h6" gutterBottom>
+                  {tasksSummary.completed}/{tasksSummary.total} задач выполнено
+                </Typography>
+
+                {/* Сводка по уровням сложности */}
                 <Box textAlign="center">
-                  <Typography sx={{ color: "green" }}>Easy</Typography>
+                  <Typography sx={{ color: "green" }}>Легкий</Typography>
                   <Typography>
-                    {tasksSummary.easy.completed}/{tasksSummary.easy.total}
+                    {tasksSummary.completed}/{tasksSummary.easy.total}
                   </Typography>
-                  <Typography sx={{ color: "yellow" }}>Medium</Typography>
+                  <Typography sx={{ color: "yellow" }}>Средний</Typography>
                   <Typography>
-                    {tasksSummary.medium.completed}/{tasksSummary.medium.total}
+                    {tasksSummary.completed}/{tasksSummary.medium.total}
                   </Typography>
-                  <Typography sx={{ color: "red" }}>Hard</Typography>
+                  <Typography sx={{ color: "red" }}>Сложный</Typography>
                   <Typography>
-                    {tasksSummary.hard.completed}/{tasksSummary.hard.total}
+                    {tasksSummary.completed}/{tasksSummary.hard.total}
                   </Typography>
                 </Box>
               </Box>

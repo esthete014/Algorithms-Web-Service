@@ -1,9 +1,19 @@
 // Импортируем необходимые хуки и стили
 import { useState , useEffect} from 'react';
+//import React from "react";
 import { useNavigate } from 'react-router-dom';
 import "./styles.css";
-import { Box, Button, Tabs } from '@mui/material';
+//import { Box, Button, Tabs } from '@mui/material';
 import { buildApiUrl } from './GetHost';
+import {
+    Box,
+    Typography,
+    Avatar,
+    Button,
+    AppBar,
+    Toolbar,
+}from "@mui/material";
+
 
 // Данные задач
 const tasksData = [
@@ -15,10 +25,10 @@ const tasksData = [
 
 const ListTasks = () => {
     const [tasks, setTasks] = useState([]);
-    const [value, setValue] = useState('one');
-      const handleChange = (event, newValue) => {
-        setValue(newValue);
-      };
+    // const [value, setValue] = useState('one');
+    //   const handleChange = (event, newValue) => {
+    //     setValue(newValue);
+    //   };
     const [sortOrder, setSortOrder] = useState('all'); // Хранит текущую выбранную категорию
     const navigate = useNavigate(); // Хук для программной навигации
 
@@ -65,21 +75,41 @@ const ListTasks = () => {
     return (
         <Box sx={{ zIndex: -5, display: "flex", flexDirection: "column", backgroundColor: "#1a1a1a", height: "100dvh", width: "100dvw", 
                     justifyContent: "center", alignItems: "center", margin: 0}}>
-            <Box sx={{  paddingLeft: "215px", marginBottom: 5, marginTop: -20, width: "calc(100% - 215px)", backgroundColor: "#202020"}}>
-                <Tabs 
-                value={value}
-                onChange={handleChange}
-                textColor="#202020"
-                indicatorColor="#202020"
-                aria-label="secondary tabs example"
-                >
-                <Button className='button' onClick={() => navigate("/ListTasks")}
-                    //variant='text'
-                    sx={{ marginBottom: 0, backgroundColor: "#202020", color: "#202020"}}>
-                    <img src="/logo-full.png" alt="Logo"/>
-                </Button>
-                </Tabs>
-            </Box>
+            <AppBar position="fixed" sx={{backgroundColor: "#202020"}}>
+                <Toolbar variant="dense">
+                    <Button ///кнопка лого
+                    onClick={() => navigate("/ListTasks")}
+                    sx={{
+                        marginBottom: 0,
+                        backgroundColor: "#202020",
+                        color: "#ffffff",
+                    }}
+                    >
+                    <img src="/logo-full.png" alt="Logo" />
+                    </Button>
+                    <Typography ///расстояние между иконками
+                    variant="h5"
+                    noWrap
+                    component="a"
+                    href="#app-bar-with-responsive-menu"
+                    sx={{
+                        mr: 2,
+                        display: "flex",
+                        flexGrow: 1,
+                        fontFamily: "monospace",
+                        fontWeight: 700,
+                        letterSpacing: ".3rem",
+                        color: "inherit",
+                        textDecoration: "none",
+                    }}
+                    ></Typography>
+                    <Box ////личный кабинет
+                    sx={{ flexGrow: 0 }}
+                    >
+                        <Avatar alt="User" onClick={() => navigate("/Account")}/>
+                    </Box>
+                </Toolbar>
+            </AppBar>
             <Box className="container_2">
                 <h1 className="header">Список задач</h1>
                 {/* Группа радиокнопок для фильтрации */}
