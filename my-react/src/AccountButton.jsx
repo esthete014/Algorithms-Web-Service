@@ -60,7 +60,8 @@ function AccountMenu() {
           >
             {/* Аватар пользователя, первая буква имени */}
             <Avatar sx={{ width: 32, height: 32 }}>
-              {user.username.charAt(0).toUpperCase()} {/* Берем первую букву имени */}
+              {"A"}
+              {/* {user.username.charAt(0).toUpperCase()} Берем первую букву имени */}
             </Avatar>
           </IconButton>
         </Tooltip>
@@ -88,7 +89,8 @@ function AccountMenu() {
           {/* Блок с аватаром и именем */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Avatar sx={{ width: 32, height: 32, mr: 1 }}>
-              {user.username.charAt(0).toUpperCase()} {/* Аватар с первой буквой имени */}
+              {"A"}
+              {/* {user.username.charAt(0).toUpperCase()} Аватар с первой буквой имени */}
             </Avatar>
             <Typography variant="body1" sx={{ fontWeight: '500' }}>
               {user.username} {/* Имя пользователя */}

@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 
 const App = () => {
     const [avatarSrc, setAvatarSrc] = useState('');
-
+    
     // Обёртка для кнопки личного кабинета
     const AccountButtonWrapper = () => {
         const location = useLocation(); 

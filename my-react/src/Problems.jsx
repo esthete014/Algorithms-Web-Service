@@ -5,10 +5,21 @@ import BasicGroup from './Button.jsx';
 // import AccountMenu from './AccountButton.jsx';
 import { Box, Button, Tabs } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Problems = () => {
     const [value, setValue] = useState('one');
+    const location = useLocation(); // Получаем объект location
+    const { taskId } = location.state || {};
+    const tasksData = [
+        { id: 1, title: 'Two Sum', difficulty: 'Easy' },
+        { id: 2, title: 'Add Two Numbers', difficulty: 'Medium' },
+        { id: 3, title: 'Longest Substring Without Repeating Characters', difficulty: 'Medium' },
+        { id: 4, title: 'Median of Two Sorted Arrays', difficulty: 'Hard' },
+    ];
+
+    // Находим задачу по taskId
+    const selectedTask = tasksData.find(task => task.id === taskId);
     
       const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -47,7 +58,11 @@ const Problems = () => {
                 {/* Левый блок с описанием задачи */}
                     <div style={{ padding: '20px', height: '100%' }}>
                         <h3>Задача:</h3>
-                        <p>Постановка задачи:</p>
+                        {selectedTask ? (
+                            <p>{selectedTask.title} - {selectedTask.difficulty}</p>
+                        ) : (
+                            <p>Задача не найдена.</p>
+                        )}
                     </div>
                     {/* Правый блок с кодом и консолью */}
                     <div style={{ padding: '0px', height: '100%', display: 'flex', flexDirection: 'column' }}>

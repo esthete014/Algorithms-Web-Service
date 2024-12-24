@@ -3,6 +3,7 @@ import { useState , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./styles.css";
 import { Box, Button, Tabs } from '@mui/material';
+import { buildApiUrl } from './GetHost';
 
 // Данные задач
 const tasksData = [
@@ -23,7 +24,8 @@ const ListTasks = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/problems'); // URL вашего API
+            const apiUrl = buildApiUrl(true, '/problems'); // Получаем URL с помощью функции
+            const response = await fetch(apiUrl); // Используем полученный URL
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -33,10 +35,12 @@ const ListTasks = () => {
             console.error('Ошибка при получении задач:', error);
         }
     };
+
     useEffect(() => {
         fetchTasks();
     }, []);
-    console.log(tasks)
+
+    console.log(tasks);
 
     // Фильтрация задач в зависимости от выбранной сложности
     const filterTasks = () => {
