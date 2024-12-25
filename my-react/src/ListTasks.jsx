@@ -14,7 +14,6 @@ import {
     Toolbar,
 }from "@mui/material";
 
-
 // Данные задач
 const tasksData = [
     { id: 1, title: 'Two Sum', difficulty: 'Easy' },
@@ -123,7 +122,7 @@ const ListTasks = () => {
                         />
                         Все задачи
                     </label>
-                    <label style={{ color: "#00B8A3" }}>
+                    <label style={{ color: "#00c853" }}>
                         <input
                             type="radio"
                             value="easy"

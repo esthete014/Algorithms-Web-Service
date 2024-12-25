@@ -127,4 +127,7 @@ button:hover {
   align-items: center;
 }
 
+.css-1mzvvpl-MuiPieArc-root { stroke-width: 0 }
 
+
+.MuiChartsLegend-root {justify-content: left; display: flex; }
