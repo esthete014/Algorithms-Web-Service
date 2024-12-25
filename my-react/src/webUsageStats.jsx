@@ -1,30 +1,29 @@
 export const tasksData = [
   {
-    label: 'Easy',
+    label: "Easy",
     value: 1, // Количество выполненных задач уровня Easy
-    color: '#00cc66',
-    
+    color: "#00cc66",
   },
   {
-    label: 'Medium',
+    label: "Medium",
     value: 2, // Количество выполненных задач уровня Medium
-    color: '#ffab00',
+    color: "#ffab00",
   },
   {
-    label: 'Hard',
+    label: "Hard",
     value: 1, // Количество выполненных задач уровня Hard
-    color: '#FF375F',
+    color: "#FF375F",
   },
-  { 
-    label: 'unsolved',
+  {
+    label: "unsolved",
     value: 5, // Количество выполненных задач
-    color: '#424242',
+    color: "#424242",
   },
 ];
 
 export const completedTasksData = tasksData.map((task) => ({
   label: task.label,
-  value: task.value, 
+  value: task.value,
   color: task.color,
 }));
 

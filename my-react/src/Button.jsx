@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 
 const theme = createTheme({
   palette: {
@@ -12,8 +12,8 @@ const theme = createTheme({
       main: "#1b5e20",
     },
     primary: {
-        main: '#1976d2', // Цвет индикатора загрузки
-      },
+      main: "#1976d2", // Цвет индикатора загрузки
+    },
   },
 });
 
@@ -49,7 +49,7 @@ function BasicGroup() {
           loadingIndicator={<CircularProgress color="customColor" size={16} />}
           sx={{
             borderColor: theme.palette.customColor.main, // Установите цвет обводки
-            '&.MuiLoadingButton-loading': {
+            "&.MuiLoadingButton-loading": {
               borderColor: theme.palette.customColor.main, // Сохраните цвет обводки при загрузке
             },
           }}
@@ -63,7 +63,7 @@ function BasicGroup() {
           loadingIndicator={<CircularProgress color="customColor" size={16} />}
           sx={{
             borderColor: theme.palette.customColor.main, // Установите цвет обводки
-            '&.MuiLoadingButton-loading': {
+            "&.MuiLoadingButton-loading": {
               borderColor: theme.palette.customColor.main, // Сохраните цвет обводки при загрузке
             },
           }}
