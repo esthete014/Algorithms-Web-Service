@@ -4,8 +4,6 @@ import PropTypes from "prop-types"; // Импортируем PropTypes
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { buildApiUrl } from "./GetHost";
-import Cookies from "universal-cookie";
-const cookies = new Cookies();
 const allTabs = [
   {
     id: "Log in",
@@ -85,12 +83,15 @@ const Register = ({ isLocal }) => {
         }
 
         const isAdminData = await adminCheckResponse.json();
+        document.cookie = data["JWT"];
         console.log(isAdminData);
         if (isAdminData.isAdmin === "true") {
+          localStorage.setItem("isAdmin", true);
           console.log("User  is admin");
           // Здесь вы можете перенаправить админа на другую страницу
           navigate("/ListTasks"); // Пример перенаправления для админа
         } else {
+          localStorage.setItem("isAdmin", false);
           console.log("User  is not admin");
           navigate("/ListTasks"); // Перенаправление для обычного пользователя
         }
