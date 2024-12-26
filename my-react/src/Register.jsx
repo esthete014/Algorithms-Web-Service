@@ -4,7 +4,8 @@ import PropTypes from "prop-types"; // Импортируем PropTypes
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { buildApiUrl } from "./GetHost";
-
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 const allTabs = [
   {
     id: "Log in",
@@ -43,6 +44,7 @@ const Register = ({ isLocal }) => {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: JSON.stringify(formData),
+        //credentials: 'include',
       });
 
       if (!response.ok) {
@@ -52,12 +54,46 @@ const Register = ({ isLocal }) => {
       }
 
       const data = await response.json();
+      //cookies.set("token", data["JWT"]);
       console.log(data); // Обработка ответа от сервера
+      //   response.cookie('token', data["JWT"], {
+      //     httpOnly: true, // Защита от XSS
+      //     secure: true, // Убедитесь, что используется HTTPS
+      //     sameSite: 'None', // Для кросс-доменных запросов
+      //   });
 
       if (mode === "Log in") {
-        // Если вход успешен, сохраняем данные пользователя и перенаправляем
+        // Если вход успешен, сохраняем данные пользователя
         localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/ListTasks");
+
+        // Проверяем, является ли пользователь администратором
+        const adminCheckResponse = await fetch(
+          "http://26.13.2.150:8080/v2/is-admin",
+          {
+            method: "POST", // Изменено на POST
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+
+              //"Authorization": `Bearer ${data.token}`, // Если требуется токен для авторизации
+            },
+            body: JSON.stringify({ token: data["JWT"] }), // Передаем необходимые данные, если требуется
+          }
+        );
+
+        if (!adminCheckResponse.ok) {
+          throw new Error("Failed to check admin status");
+        }
+
+        const isAdminData = await adminCheckResponse.json();
+        console.log(isAdminData);
+        if (isAdminData.isAdmin === "true") {
+          console.log("User  is admin");
+          // Здесь вы можете перенаправить админа на другую страницу
+          navigate("/ListTasks"); // Пример перенаправления для админа
+        } else {
+          console.log("User  is not admin");
+          navigate("/ListTasks"); // Перенаправление для обычного пользователя
+        }
       } else {
         // Если регистрация успешна, можно перенаправить на страницу входа или показать сообщение
         alert("Registration successful! You can now log in.");

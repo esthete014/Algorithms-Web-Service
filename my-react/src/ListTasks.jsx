@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
 //import { Box, Button, Tabs } from '@mui/material';
-import { buildApiUrl } from "./GetHost";
+//import { buildApiUrl } from "./GetHost";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Box,
   Typography,
@@ -45,6 +46,11 @@ const ListTasks = () => {
   //   const handleChange = (event, newValue) => {
   //     setValue(newValue);
   //   };
+  const difficultyColors = {
+    easy: "#00c853", // Цвет для легких задач
+    medium: "#FFC01E", // Цвет для средних задач
+    hard: "#FF375F", // Цвет для сложных задач
+  };
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -61,23 +67,23 @@ const ListTasks = () => {
   const [sortOrder, setSortOrder] = useState("all"); // Хранит текущую выбранную категорию
   const navigate = useNavigate(); // Хук для программной навигации
 
-  const fetchTasks = async () => {
-    try {
-      const apiUrl = buildApiUrl(true, "/problems"); // Получаем URL с помощью функции
-      const response = await fetch(apiUrl); // Используем полученный URL
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setTasks(data); // Устанавливаем полученные задачи в состояние
-    } catch (error) {
-      console.error("Ошибка при получении задач:", error);
-    }
-  };
+//   const fetchTasks = async () => {
+//     try {
+//       //const apiUrl = buildApiUrl(true, "/problems"); // Получаем URL с помощью функции
+//       const response = await fetch('http://26.13.2.150:8080'); // Используем полученный URL
+//       if (!response.ok) {
+//         throw new Error("Network response was not ok");
+//       }
+//       const data = await response.json();
+//       setTasks(data); // Устанавливаем полученные задачи в состояние
+//     } catch (error) {
+//       console.error("Ошибка при получении задач:", error);
+//     }
+//   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+//   useEffect(() => {
+//     fetchTasks();
+//   }, []);
 
   console.log(tasks);
 
@@ -145,6 +151,9 @@ const ListTasks = () => {
               textDecoration: "none",
             }}
           ></Typography>
+          {/* <Button sx={{marginRight:2, }}>
+            <AddIcon />
+          </Button> */}
           <Box ////личный кабинет
             sx={{ flexGrow: 0 }}
           >
@@ -165,6 +174,7 @@ const ListTasks = () => {
             />
             Все задачи
           </label>
+
           <label style={{ color: "#00c853" }}>
             <input
               type="radio"
@@ -193,6 +203,7 @@ const ListTasks = () => {
             Hard
           </label>
         </div>
+
         {/* Список задач */}
         <Paper
           position="fixed"
@@ -203,6 +214,19 @@ const ListTasks = () => {
             borderRadius: 5,
           }}
         >
+          {/* Кнопка для админа */}
+          <Button
+            sx={{
+              marginRight: 0,
+              borderRadius: 5,
+              marginLeft: 1,
+              color: "fff",
+            }}
+          >
+            <AddIcon />
+            Add Task
+          </Button>
+          {/* /////////// */}
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -231,7 +255,7 @@ const ListTasks = () => {
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={task.code}
+                        key={task.id}
                         onClick={() => handleTaskClick(task.id)} // Переход к задаче
                       >
                         {columns.map((column) => {
@@ -239,7 +263,11 @@ const ListTasks = () => {
                           return (
                             <TableCell
                               sx={{
-                                color: "#ffffff",
+                                color:
+                                column.id === "difficulty"
+                                  ? difficultyColors[value.toLowerCase()]
+                                  : "#ffffff",
+
                                 backgroundColor: "#1a1a1a",
                               }}
                               key={column.id}
@@ -262,7 +290,7 @@ const ListTasks = () => {
               color: "#ffffff",
               backgroundColor: "#1a1a1a",
             }}
-            rowsPerPageOptions={[2, 25, 100]}
+            rowsPerPageOptions={[1, 3, 10]}
             component="div"
             count={filteredTasks.length}
             rowsPerPage={rowsPerPage}

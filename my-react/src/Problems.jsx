@@ -1,7 +1,8 @@
 import Splitter, { SplitDirection } from "@devbookhq/splitter";
 import "./styles.css";
 import BasicGroup from "./Button.jsx";
-// import AccountMenu from './AccountButton.jsx';
+import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Typography,
@@ -9,12 +10,13 @@ import {
   Button,
   AppBar,
   Toolbar,
+  ButtonGroup,
 } from "@mui/material";
-//import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { cpp } from "@codemirror/lang-cpp";
+import Chip from "@mui/material/Chip";
 
 const Problems = () => {
   const location = useLocation();
@@ -29,6 +31,11 @@ const Problems = () => {
     },
     { id: 4, title: "Median of Two Sorted Arrays", difficulty: "Hard" },
   ];
+  const difficultyColors = {
+    Easy: "#00c853", // Цвет для легких задач
+    Medium: "#FFC01E", // Цвет для средних задач
+    Hard: "#FF375F", // Цвет для сложных задач
+  };
 
   // Находим задачу по taskId
   const selectedTask = tasksData.find((task) => task.id === taskId);
@@ -100,6 +107,25 @@ const Problems = () => {
             alignItems: "center",
           }}
         >
+          <ButtonGroup
+            color="#fff"
+            sx={{
+              position: "fixed",
+              height: "4dvh",
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "start",
+              left: 20,
+            }}
+            aria-label="Small button group"
+          >
+            <Button>
+              <ModeEditOutlineIcon />
+            </Button>
+            <Button>
+              <DeleteIcon />
+            </Button>
+          </ButtonGroup>
           <BasicGroup /> {/* Компонент с кнопками */}
           {/* <AccountMenu /> */}
         </Box>
@@ -108,6 +134,12 @@ const Problems = () => {
           {/* Левый блок с описанием задачи */}
           <div style={{ padding: "20px", height: "100dvh" }}>
             <h3>Задача:</h3>
+            <Chip
+              label={selectedTask.difficulty}
+              sx={{
+                backgroundColor: difficultyColors[selectedTask.difficulty],
+              }}
+            />
             {selectedTask ? (
               <p>
                 {selectedTask.title} - {selectedTask.difficulty}
