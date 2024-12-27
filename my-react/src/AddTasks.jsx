@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
+import { host } from "./apiConfig";
 import {
   Box,
   Typography,
@@ -53,7 +54,7 @@ const AddTasks = ({ onAddTask }) => {
         console.log(jwtCookie);
         console.log(document.cookie);
         newTask.token = document.cookie;
-        const response = await fetch("http://26.13.2.150:8080/v2/add-task", {
+        const response = await fetch(`${host}/v2/add-task`, {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",

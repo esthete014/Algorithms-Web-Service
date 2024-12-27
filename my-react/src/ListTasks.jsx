@@ -5,6 +5,7 @@ import "./styles.css";
 //import { Box, Button, Tabs } from '@mui/material';
 //import { buildApiUrl } from "./GetHost";
 import AddIcon from "@mui/icons-material/Add";
+import { host } from "./apiConfig";
 // import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import {
   Box,
@@ -54,7 +55,7 @@ const ListTasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://26.13.2.150:8080/v2/get-tasks', {
+      const response = await fetch(`${host}/v2/get-tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

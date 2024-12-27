@@ -4,6 +4,7 @@ import PropTypes from "prop-types"; // Импортируем PropTypes
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { buildApiUrl } from "./GetHost";
+import { host } from "./apiConfig";
 const allTabs = [
   {
     id: "Log in",
@@ -28,8 +29,8 @@ const Register = ({ isLocal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mode = allTabs[activeTabIndex].id; // Получаем текущий режим (Log in или Register)
-    const additionalPath = mode === "Log in" ? "/v2/login" : "/v2/register"; // Определяем путь
-    const url = buildApiUrl(isLocal, additionalPath); // Получаем полный URL
+    //const additionalPath = mode === "Log in" ? "/v2/login" : "/v2/register"; // Определяем путь
+    //const url = buildApiUrl(isLocal, additionalPath); // Получаем полный URL
 
     const formData = {
       login: login, // Используем состояние для логина
@@ -37,7 +38,7 @@ const Register = ({ isLocal }) => {
     };
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`${host}${mode === "Log in" ? "/v2/login" : "/v2/register"}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -62,7 +63,7 @@ const Register = ({ isLocal }) => {
 
         // Проверяем, является ли пользователь администратором
         const adminCheckResponse = await fetch(
-          "http://26.13.2.150:8080/v2/is-admin",
+          `${host}/v2/is-admin`,
           {
             method: "POST", // Изменено на POST
             headers: {

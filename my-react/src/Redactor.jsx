@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import { buildApiUrl } from "./GetHost";
+import { host } from "./apiConfig";
 import {
   Box,
   Typography,
@@ -49,10 +50,10 @@ const Redactor = ({ isLocal }) => {
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
       // console.log(task)
       taskData.token = document.cookie;
-      const url = buildApiUrl(isLocal, "/v2/update-task"); // URL для обновления задачи
+      //const url = buildApiUrl(`${host}/v2/update-task`); // URL для обновления задачи
       //const token = localStorage.getItem("jwtToken"); // Получаем JWT токен
 
-      const response = await fetch(url, {
+      const response = await fetch(`${host}/v2/update-task`, {
         method: "POST", // Используем POST для обновления
         headers: {
           "Content-Type": "application/x-www-form-urlencoded", // Изменяем на application/json
@@ -464,12 +465,13 @@ const Redactor = ({ isLocal }) => {
           }}
         
         />
+        <Button type="submit" variant="contained" color="primary" sx={{marginLeft:30, marginTop:3}} >
+          Обновить задачу
+        </Button>
         
       </form>
       </div>
-      <Button type="submit" variant="contained" color="primary" sx={{marginLeft:30, marginTop:3}}>
-          Обновить задачу
-        </Button>
+      
     </div>
   );
 };

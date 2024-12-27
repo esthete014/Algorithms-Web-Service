@@ -1,10 +1,11 @@
 import Splitter, { SplitDirection } from "@devbookhq/splitter";
 import "./styles.css";
-import BasicGroup from "./Button.jsx";
+//import BasicGroup from "./Button.jsx";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { host } from "./apiConfig";
 import {
   Box,
   Typography,
@@ -83,7 +84,7 @@ const Problems = () => {
       console.log("Отправляемые данные:", payload);
       //console.log(task_id);
       payload.token=document.cookie;
-      const response = await fetch("http://26.13.2.150:8080/v2/run", {
+      const response = await fetch(`${host}/v2/run`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded", // Изменено на application/json
