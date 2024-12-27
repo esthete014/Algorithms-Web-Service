@@ -2,17 +2,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
-		"./app/**/*.{js,ts,jsx,tsx}",
-		"./pages/**/*.{js,ts,jsx,tsx}",
-		"./components/**/*.{js,ts,jsx,tsx}",
-
-		// Or if using `src` directory:
+		// "./app/**/*.{js,ts,jsx,tsx}",
+		// "./pages/**/*.{js,ts,jsx,tsx}",
+		// "./components/**/*.{js,ts,jsx,tsx}",
 		"./src/**/*.{js,ts,jsx,tsx}",
 	],
 	theme: {
 		extend: {
 			colors: {
-				"dark-layer-1": "rgb(40,40,40)",
+				red: "rgb(255, 0, 0)",
+				"dark-layer-1": "(40,40rgb,40)",
 				"dark-layer-2": "rgb(26,26,26)",
 				"dark-label-2": "rgba(239, 241, 246, 0.75)",
 				"dark-divider-border-2": "rgb(61, 61, 61)",

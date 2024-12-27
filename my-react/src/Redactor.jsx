@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import { buildApiUrl } from "./GetHost";
 import {
-    Box,
-    Typography,
-    Avatar,
-    AppBar,
-    Toolbar,
-  } from "@mui/material";
+  Box,
+  Typography,
+  Avatar,
+  AppBar,
+  Toolbar,
+} from "@mui/material";
 
 const Redactor = ({ isLocal }) => {
-  const { taskId } = useParams(); // Получаем ID задачи из URL
+  const location = useLocation(); // Используем useLocation для получения состояния
+  const { task } = location.state || {}; // Получаем данные о задаче
   const [taskData, setTaskData] = useState({
     task_id: "",
     task_name: "",
@@ -22,52 +23,47 @@ const Redactor = ({ isLocal }) => {
     tests: "",
     main_code: ""
   });
+  
   const navigate = useNavigate();
 
+  // useEffect для заполнения полей формы данными о задаче
   useEffect(() => {
-    const fetchTaskData = async () => {
-      try {
-        // Здесь предполагается, что у вас есть способ получить данные задачи
-        // Например, данные могут быть переданы в компонент или сохранены в состоянии
-        const token = localStorage.getItem("jwtToken"); // Получаем JWT токен
-  
-        // Если у вас есть данные задачи в состоянии, используйте их напрямую
-        if (!taskData) {
-          throw new Error("Данные задачи недоступны");
-        }
-  
-        // Если вам нужно просто отобразить данные, можно использовать их напрямую
-        setTaskData(taskData);
-  
-      } catch (error) {
-        console.error("Ошибка:", error);
-        alert("Не удалось загрузить данные задачи");
-      }
-    };
-  
-    fetchTaskData();
-  }, [taskId, isLocal]);
-  
-  const handleUpdateTask = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const url = buildApiUrl(isLocal, "/v2/update-task"); // URL для обновления задачи
-      const token = localStorage.getItem("jwtToken"); // Получаем JWT токен
-  
-      const response = await fetch(url, {
-        method: "POST", // Используем PUT для обновления
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": `Bearer ${token}`, // Добавляем JWT токен
-        },
-        body: JSON.stringify(taskData), // Отправляем обновленные данные
+    if (task) {
+      setTaskData({
+        task_id: task.task_id || "",
+        task_name: task.task_name || "",
+        description: task.description || "",
+        editorial: task.editorial || "",
+        creator_solution: task.creator_solution || "",
+        difficult: task.difficult || "",
+        tests: task.tests || "",
+        main_code: task.main_code || ""
       });
-  
+    }
+  }, [task]);
+
+  const handleUpdateTask = async (e) => {
+    e.preventDefault(); // Предотвращаем перезагрузку страницы
+
+    try {
+      // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+      // console.log(task)
+      taskData.token = document.cookie;
+      const url = buildApiUrl(isLocal, "/v2/update-task"); // URL для обновления задачи
+      //const token = localStorage.getItem("jwtToken"); // Получаем JWT токен
+
+      const response = await fetch(url, {
+        method: "POST", // Используем POST для обновления
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded", // Изменяем на application/json
+        },
+        body: JSON.stringify(taskData) // Отправляем обновленные данные
+      });
+
       if (!response.ok) {
         throw new Error("Ошибка при обновлении задачи");
       }
-  
+
       alert("Задача успешно обновлена!");
       navigate("/ListTasks"); // Перенаправление после успешного обновления
     } catch (error) {
@@ -78,7 +74,7 @@ const Redactor = ({ isLocal }) => {
 
   return (
     <div>
-        <AppBar position="fixed" sx={{ backgroundColor: "#202020" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#202020" }}>
         <Toolbar variant="dense">
           <Button
             onClick={() => navigate("/ListTasks")}
@@ -111,57 +107,369 @@ const Redactor = ({ isLocal }) => {
           </Box>
         </Toolbar>
       </AppBar>
-      <h2>Редактировать задачу</h2>
-      <form onSubmit={handleUpdateTask}>
+      <Typography
+        position="static"
+        variant="h3"
+        //padding="10px"
+        marginLeft={5}
+        width="90%"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        color="#ffffff"
+      >
+        Редактировать задачу
+      </Typography>
+      <div className="container_3"
+        style={{
+          width: "35dvw", // Фиксированная ширина
+          height: "70dvh", // Фиксированная высота
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          position: "static",
+          padding: "20px",
+          marginTop:15,
+          overflowY: "auto", // Вертикальная прокрутка
+          backgroundColor: "#282828", // Фоновый цвет для контейнера
+          borderRadius: "8px", // Закругленные углы
+          boxShadow: "0 2px 10px rgba(0,0,0,0.1)", // Тень для контейнера
+        }}>
+      <form onSubmit={handleUpdateTask}
+      style={{
+        position: "static",
+        padding: "20px",
+        marginBottom: 350,
+        height: "70dvh",
+        width: "60%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center", // Занять всю ширину контейнера
+      }}
+      >
         <TextField
           label="ID задачи"
-          value={taskData.task_id || taskId} // Используем taskId, если taskData.task_id пуст
+          variant="outlined"
+          fullWidth
+          backgroundColor="#fff"
+          margin="0"
+          padding="0"
+          color="#ffffff"
+          multiline
+          value={taskData.task_id}
           disabled
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Имя задачи"
+          variant="outlined"
           value={taskData.task_name}
           onChange={(e) => setTaskData({ ...taskData, task_name: e.target.value })}
           required
+          color="#fff"
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="normal"
+          multiline
+          rows={4}
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Описание"
+          variant="outlined"
           value={taskData.description}
           onChange={(e) => setTaskData({ ...taskData, description: e.target.value })}
           required
+          color="#fff"
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="normal"
+          multiline
+          rows={4}
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Редакция"
           value={taskData.editorial}
           onChange={(e) => setTaskData({ ...taskData, editorial: e.target.value })}
           required
+          variant="outlined"
+          color="#fff"
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="normal"
+          multiline
+          rows={4}
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Решение создателя"
           value={taskData.creator_solution}
           onChange={(e) => setTaskData({ ...taskData, creator_solution: e.target.value })}
           required
+          variant="outlined"
+          color="#fff"
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="normal"
+          multiline
+          rows={4}
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Сложность"
           value={taskData.difficult}
           onChange={(e) => setTaskData({ ...taskData, difficult: e.target.value })}
           required
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="0"
+          padding="0"
+          color="#ffffff"
+          multiline
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Тесты"
           value={taskData.tests}
           onChange={(e) => setTaskData({ ...taskData, tests: e.target.value })}
+          variant="outlined"
+          color="#fff"
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="normal"
+          multiline
+          rows={4}
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
         <TextField
           label="Основной код"
           value={taskData.main_code}
           onChange={(e) => setTaskData({ ...taskData, main_code: e.target.value })}
+          variant="outlined"
+          color="#fff"
+          fullWidth
+          backgroundColor="#ffffff"
+          margin="normal"
+          multiline
+          rows={4}
+          InputProps={{
+            style: {
+              borderColor: "#ffffff", // Белая рамка
+              color: "#ffffff", // Белый текст
+            },
+          }}
+          InputLabelProps={{
+            style: {
+              color: "#ffffff", // Белый цвет для метки
+            },
+          }}
+          sx={{
+            width: "150%",
+
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#ffffff", // Белая рамка
+              },
+              "&:hover fieldset": {
+                borderColor: "#ffffff", // Белая рамка при наведении
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#ffffff", // Белая рамка при фокусе
+              },
+            },
+          }}
+        
         />
-        <Button type="submit" variant="contained" color="primary">
+        
+      </form>
+      </div>
+      <Button type="submit" variant="contained" color="primary" sx={{marginLeft:30, marginTop:3}}>
           Обновить задачу
         </Button>
-      </form>
     </div>
   );
 };

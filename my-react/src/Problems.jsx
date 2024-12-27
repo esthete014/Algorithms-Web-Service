@@ -27,6 +27,13 @@ const Problems = () => {
   const location = useLocation();
   const { task } = location.state || {};
   const [isAdmin, setIsAdmin] = useState(false);
+  const [code, setCode] = useState(""); // Состояние для кода
+  const [tests, setTests] = useState([]);
+  const [consoleOutput, setConsoleOutput] = useState("");
+  const navigate = useNavigate();
+  const [taskData, setTaskData] = useState({
+    task_id: "",
+  });
   const difficultColors = {
     Easy: "#00c853", // Цвет для легких задач
     Medium: "#FFC01E", // Цвет для средних задач
@@ -37,11 +44,16 @@ const Problems = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  useEffect(() => {
+    if (task) {
+      setTaskData({
+        task_id: task.task_id || "",
+      });
+    }
+  }, [task]);
 
   // Находим задачу по taskId
   //const selectedTask = tasksData.find((task) => task.id === task);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAdminStatus = () => {
@@ -55,7 +67,45 @@ const Problems = () => {
   useEffect(() => {
     console.log("Received task:", task);
   }, [task]);
+  const handleEditClick = () => {
+    navigate("/Redactor", { state: { task: task } }); // Передаем данные задачи в state
+  };
 
+  const handleSubmit = async () => {
+    const payload = {
+      code: code,
+      task_id: String(taskData.task_id),
+      tests:tests,
+      token: ""
+    };
+  
+    try {
+      console.log("Отправляемые данные:", payload);
+      //console.log(task_id);
+      payload.token=document.cookie;
+      const response = await fetch("http://26.13.2.150:8080/v2/run", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded", // Изменено на application/json
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        setConsoleOutput(
+          `Успешно! Пройдено тестов: ${result.successful_tests}, Неудачных: ${result.failed_tests}`
+        );
+        //navigate("/problems", { state: { task: task } });
+      } else {
+        setConsoleOutput("Произошла ошибка при выполнении тестов.");
+      }
+    } catch (error) {
+      console.error("Ошибка:", error);
+      setConsoleOutput("Не удалось отправить данные на сервер.");
+    }
+  };
   return (
     <Box
       sx={{
@@ -135,14 +185,15 @@ const Problems = () => {
               aria-label="Small button group"
             >
               <Button>
-                <ModeEditOutlineIcon onClick={() => navigate("/Redactor")}/>
+                <ModeEditOutlineIcon onClick={handleEditClick} />
               </Button>
               <Button>
-                <DeleteIcon />
+                <DeleteIcon onClick={handleSubmit}/>
               </Button>
             </ButtonGroup>
           )}
-          <BasicGroup /> {/* Компонент с кнопками */}
+          <Button onClick={() => handleSubmit(task?.id, tests)}>Run</Button>
+          {/* <BasicGroup onClick={() => handleSubmit(task?.id, tests)} />  */}
           {/* <AccountMenu /> */}
         </Box>
         {/* Разделение контента на горизонтальные и вертикальные панели */}
@@ -165,24 +216,24 @@ const Problems = () => {
           >
             <h3>Задача:</h3>
             {task ? (
-        <>
-          <Chip
-            label={task.difficult}
-            sx={{
-              position: "static",
-              width: "4dvw",
-              backgroundColor: difficultColors[task.difficult],
-            }}
-          />
-          <p>
-            {task.task_name} - {task.difficult}
-          </p>
-          <p>{task.description}</p> {/* Отображение описания задачи */}
-          <p>{task.editorial}</p> {/* Отображение редакции задачи */}
-        </>
-      ) : (
-        <p>Задача не найдена.</p>
-      )}
+              <>
+                <Chip
+                  label={task.difficult}
+                  sx={{
+                    position: "static",
+                    width: "4dvw",
+                    backgroundColor: difficultColors[task.difficult],
+                  }}
+                />
+                <p>
+                  {task.task_name} - {task.difficult}
+                </p>
+                <p>{task.description}</p> {/* Отображение описания задачи */}
+                <p>{task.editorial}</p> {/* Отображение редакции задачи */}
+              </>
+            ) : (
+              <p>Задача не найдена.</p>
+            )}
           </div>
           {/* Правый блок с кодом и консолью */}
           <div
@@ -212,13 +263,11 @@ const Problems = () => {
               {/* Текстовое поле для написания кода */}
               <div className="overflow-auto" style={{ height: "100%" }}>
                 <CodeMirror
-                  value="int main(){
-    print('Hello, World!')
-    return 0;
-}"
+                  value={code}
                   theme={vscodeDark}
                   extensions={[cpp()]}
                   style={{ fontSize: 16 }}
+                  onChange={(value) => setCode(value)}
                 />
               </div>
               <div
@@ -253,10 +302,11 @@ const Problems = () => {
                         >
                           <div>
                             <CodeMirror
-                              value="Hello, World!"
+                              value={tests.join("\n")}
                               theme={vscodeDark}
                               extensions={[json()]}
                               style={{ fontSize: 16 }}
+                              onChange={(value) => setTests(value.split("\n"))}
                             />
                           </div>
                         </div>
@@ -265,6 +315,10 @@ const Problems = () => {
                     {value === "two" && (
                       <div>
                         <h3>Console</h3>
+                        <pre style={{ color: "white" }}>
+                          {consoleOutput}
+                        </pre>{" "}
+                        {/* Выводим результат в консоли */}
                       </div>
                     )}
                   </Box>
