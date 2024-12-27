@@ -1,12 +1,11 @@
-// Импортируем необходимые хуки и стили
 import { useState, useEffect } from "react";
-//import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
-import AddTasks from './AddTasks';
+//import AddTasks from "./AddTasks";
 //import { Box, Button, Tabs } from '@mui/material';
 //import { buildApiUrl } from "./GetHost";
 import AddIcon from "@mui/icons-material/Add";
+// import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import {
   Box,
   Typography,
@@ -25,40 +24,24 @@ import {
 } from "@mui/material";
 
 const columns = [
-  { id: "title", label: "Title", minWidth: 250 },
-  { id: "difficulty", label: "Difficulty", minWidth: 186 },
-];
-
-// Данные задач
-const tasksData = [
-  { id: 1, title: "Two Sum", difficulty: "Easy" },
-  { id: 2, title: "Add Two Numbers", difficulty: "Medium" },
-  {
-    id: 3,
-    title: "Longest Substring Without Repeating Characters",
-    difficulty: "Medium",
-  },
-  { id: 4, title: "Median of Two Sorted Arrays", difficulty: "Hard" },
+  { id: "task_name", label: "Title", minWidth: 250 },
+  { id: "difficult", label: "Difficult", minWidth: 186 },
 ];
 
 const ListTasks = () => {
   const [tasks, setTasks] = useState([]);
-
-  // const [value, setValue] = useState('one');
-  //   const handleChange = (event, newValue) => {
-  //     setValue(newValue);
-  //   };
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const navigate = useNavigate();
   const difficultyColors = {
     easy: "#00c853", // Цвет для легких задач
     medium: "#FFC01E", // Цвет для средних задач
     hard: "#FF375F", // Цвет для сложных задач
   };
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const handleAddTask = (newTask) => {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-  };
+  // const handleAddTask = (newTask) => {
+  //   setTasks((prevTasks) => [...prevTasks, newTask]);
+  // };
 
   useEffect(() => {
     const checkAdminStatus = () => {
@@ -69,6 +52,41 @@ const ListTasks = () => {
     checkAdminStatus();
   }, []);
 
+  const fetchTasks = async () => {
+    try {
+      const response = await fetch('http://26.13.2.150:8080/v2/get-tasks', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+      //  // Your API endpoint
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setTasks(data.tasks); // Assuming the response structure is like the backend example
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  console.log(tasks);
+
+  const [sortOrder, setSortOrder] = useState("all");
+  // Фильтрация задач в зависимости от выбранной сложности
+  const filterTasks = () => {
+    if (sortOrder === "all") {
+      return tasks; // Если выбрано "все", возвращаем весь список
+    }
+    return tasks.filter(
+      (task) => task.difficult.toLowerCase() === sortOrder // Используем difficult
+    );
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -77,49 +95,19 @@ const ListTasks = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  const [sortOrder, setSortOrder] = useState("all"); // Хранит текущую выбранную категорию
-  const navigate = useNavigate(); // Хук для программной навигации
-
-  //   const fetchTasks = async () => {
-  //     try {
-  //       //const apiUrl = buildApiUrl(true, "/problems"); // Получаем URL с помощью функции
-  //       const response = await fetch('http://26.13.2.150:8080'); // Используем полученный URL
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const data = await response.json();
-  //       setTasks(data); // Устанавливаем полученные задачи в состояние
-  //     } catch (error) {
-  //       console.error("Ошибка при получении задач:", error);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     fetchTasks();
-  //   }, []);
-
-  console.log(tasks);
-
-  // Фильтрация задач в зависимости от выбранной сложности
-  const filterTasks = () => {
-    if (sortOrder === "all") {
-      return tasksData; // Если выбрано "все", возвращаем весь список
-    }
-    return tasksData.filter(
-      (task) => task.difficulty.toLowerCase() === sortOrder
-    ); // Фильтрация по сложности
-  };
-
   // Обновление выбранного уровня сложности
   const handleSortChange = (event) => {
     setSortOrder(event.target.value); // Обновляем состояние на основе выбранного значения
   };
 
   // Переход к задаче по клику
-  const handleTaskClick = (taskId) => {
-    navigate("/problems", { state: { taskId } }); // Передаём ID задачи через state
+  const handleTaskClick = (task) => {
+    navigate("/problems", { state: { task } }); // Передаём ID задачи через state
   };
+
+  // const handleEditClick = (taskId) => {
+  //   navigate(`/Redactor/${taskId}`); // Переход к редактированию задачи
+  // };
 
   const filteredTasks = filterTasks(); // Получаем список отфильтрованных задач
 
@@ -165,9 +153,6 @@ const ListTasks = () => {
               textDecoration: "none",
             }}
           ></Typography>
-          {/* <Button sx={{marginRight:2, }}>
-            <AddIcon />
-          </Button> */}
           <Box ////личный кабинет
             sx={{ flexGrow: 0 }}
           >
@@ -188,7 +173,6 @@ const ListTasks = () => {
             />
             Все задачи
           </label>
-
           <label style={{ color: "#00c853" }}>
             <input
               type="radio"
@@ -217,7 +201,6 @@ const ListTasks = () => {
             Hard
           </label>
         </div>
-
         {/* Список задач */}
         <Paper
           position="fixed"
@@ -274,7 +257,8 @@ const ListTasks = () => {
                         role="checkbox"
                         tabIndex={-1}
                         key={task.id}
-                        onClick={() => handleTaskClick(task.id)} // Переход к задаче
+                        onClick={() => handleTaskClick(task)}
+                         // Переход к задаче
                       >
                         {columns.map((column) => {
                           const value = task[column.id];
@@ -282,10 +266,9 @@ const ListTasks = () => {
                             <TableCell
                               sx={{
                                 color:
-                                  column.id === "difficulty"
+                                  column.id === "difficult"
                                     ? difficultyColors[value.toLowerCase()]
                                     : "#ffffff",
-
                                 backgroundColor: "#1a1a1a",
                               }}
                               key={column.id}
@@ -310,7 +293,8 @@ const ListTasks = () => {
             }}
             rowsPerPageOptions={[1, 3, 10]}
             component="div"
-            count={filteredTasks.length}
+            //count={filteredTasks.length}
+            count={tasks.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

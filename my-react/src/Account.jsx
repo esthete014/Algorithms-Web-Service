@@ -18,7 +18,6 @@ import {
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useNavigate } from "react-router-dom";
 import tasksData from "./ListTasks.jsx";
-// import ListTasks from "./ListTasks.jsx";
 import { completedTasksData } from "./webUsageStats";
 import "./styles.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -37,15 +36,14 @@ const Account = () => {
   });
 
   const [userData] = React.useState({
-    username: "MaximFlunnЙоу",
+    username: "SosiPopku(jepu)",
     avatar: "/path/to/avatar.jpg",
   });
 
-  // const [radius] = React.useState(65);
   const [itemNb] = React.useState(4);
-  // const [radius, setRadius] = React.useState(50);
-  // const [itemNb, setItemNb] = React.useState(5);
   const [skipAnimation] = React.useState(false);
+
+  // const [radius] = React.useState(65);
 
   // Example tasks summary data
   // const tasksSummary = {
@@ -135,6 +133,7 @@ const Account = () => {
                   padding: 2,
                   backgroundColor: "#1D21261A",
                   color: "#fff",
+                  height: "100%",
                   // border-radius: "4px",
                 }}
               >
@@ -144,7 +143,11 @@ const Account = () => {
                     src={userData.avatar}
                     sx={{ width: 100, height: 100, marginBottom: 2 }}
                   />
-                  <Typography variant="h6" gutterBottom>
+                  <Typography
+                    sx={{ marginBottom: 2 }}
+                    variant="h6"
+                    gutterBottom
+                  >
                     {userData.username}
                   </Typography>
                   <TextField
@@ -158,12 +161,12 @@ const Account = () => {
                     }}
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        color: "white",
-                        "& fieldset": { borderColor: "white" },
-                        "&:hover fieldset": { borderColor: "white" },
+                        color: "gray",
+                        "& fieldset": { borderColor: "gray" },
+                        "&:hover fieldset": { borderColor: "gray" },
                       },
-                      "& .MuiInputLabel-root": { color: "white" },
-                      "& .MuiInputBase-input": { color: "white" },
+                      "& .MuiInputLabel-root": { color: "gray" },
+                      "& .MuiInputBase-input": { color: "gray" },
                     }}
                   />
                 </Box>
@@ -234,7 +237,7 @@ const Account = () => {
                     }}
                   >
                     {completedTasksData
-                      .filter((task) => task.label !== "unsolved") // Игнорируем задачу с label = "unsolved"
+                      .filter((task) => task.label !== "Unsolved") // Игнорируем задачу с label = "unsolved"
                       .map((task) => (
                         <Box
                           key={task.label}

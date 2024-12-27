@@ -11,23 +11,24 @@ const allTabs = [
   },
   {
     id: "Register",
-    name: "Register",
+    name: "Sign in",
   },
 ];
 
 const Register = ({ isLocal }) => {
   const [login, setLogin] = useState(""); // Состояние для логина
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [activeTabIndex, setActiveTabIndex] = useState(0); // Устанавливаем начальный индекс на 0
-  const tabsRef = useRef([]);
   const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
   const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+  const tabsRef = useRef([]);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mode = allTabs[activeTabIndex].id; // Получаем текущий режим (Log in или Register)
-    const additionalPath = mode === "Log in" ? "/v2/login" : "/v1/register"; // Определяем путь
+    const additionalPath = mode === "Log in" ? "/v2/login" : "/v2/register"; // Определяем путь
     const url = buildApiUrl(isLocal, additionalPath); // Получаем полный URL
 
     const formData = {
@@ -54,11 +55,6 @@ const Register = ({ isLocal }) => {
       const data = await response.json();
       //cookies.set("token", data["JWT"]);
       console.log(data); // Обработка ответа от сервера
-      //   response.cookie('token', data["JWT"], {
-      //     httpOnly: true, // Защита от XSS
-      //     secure: true, // Убедитесь, что используется HTTPS
-      //     sameSite: 'None', // Для кросс-доменных запросов
-      //   });
 
       if (mode === "Log in") {
         // Если вход успешен, сохраняем данные пользователя
@@ -103,6 +99,8 @@ const Register = ({ isLocal }) => {
     } catch (error) {
       console.error("Ошибка:", error);
       alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false); // Устанавливаем состояние загрузки в false
     }
   };
 
@@ -173,8 +171,10 @@ const Register = ({ isLocal }) => {
               marginTop: 3,
               "&:hover": { backgroundColor: "#1976d2" },
             }}
+            disabled={loading}
           >
-            {allTabs[activeTabIndex].name}
+            {/* {allTabs[activeTabIndex].name} */}
+            {loading ? "Загрузка..." : allTabs[activeTabIndex].name}
           </Button>
         </form>
       </div>

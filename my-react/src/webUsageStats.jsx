@@ -15,7 +15,7 @@ export const tasksData = [
     color: "#FF375F",
   },
   {
-    label: "unsolved",
+    label: "Unsolved",
     value: 5, // Количество выполненных задач
     color: "#424242",
   },
